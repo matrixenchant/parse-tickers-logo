@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const API = '/';
+const API = 'https://kbtux.only-dev.kz/';
 
 export const useApi = (params = {}) => {
   const { initLoading } = {
