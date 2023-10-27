@@ -3,13 +3,17 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/', async (req, res) => {
+app.get('/saved', async (req, res) => {
   const data = await fs.readFileSync('./saved.json');
   res.json(JSON.parse(data));
 });
@@ -128,6 +132,12 @@ app.post('/save', async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log('Server has started on 5000');
+
+app.use('/', express.static(path.join(__dirname, './client/dist')));
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, './client/dist', 'index.html'));
+});
+
+app.listen(8888, () => {
+  console.log('Server has started on 8888');
 });

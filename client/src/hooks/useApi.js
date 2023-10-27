@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 
-const API = 'http://192.168.50.61:5000'
+const API = 'http://195.49.215.236:8888'
 
 export const useApi = (params = {}) => {
   const { initLoading } = {

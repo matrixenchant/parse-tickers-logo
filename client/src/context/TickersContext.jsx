@@ -12,7 +12,7 @@ export const TickersContext = createContext({
 });
 
 export const TickersProvider = ({ children }) => {
-  const [loadingTickers, tickers] = useGetApi('/', []);
+  const [loadingTickers, tickers] = useGetApi('/saved', []);
 
   const [loadingApi, api] = useApi();
   const [loadingLogos, logos, mutate] = useGetApi('/logos', {});

@@ -22,7 +22,7 @@ const Home = () => {
         {stagesTickers.map((stage, i) => (
           <Link to={`/stage-${i+1}`} key={i} className="home-stages__item">
             <div className="home-stages__item-preview">
-              {stage.data.map(({ target }, j) =>
+              {stage.data.slice(0, 200).map(({ target }, j) =>
                 logos[target.symbol] && logos[target.symbol] !== 'custom' ? (
                   <div
                     key={logos[target.symbol] + j + i}
