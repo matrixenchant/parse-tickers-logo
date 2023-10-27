@@ -22,14 +22,14 @@ const Home = () => {
         {stagesTickers.map((stage, i) => (
           <Link to={`/stage-${i+1}`} key={i} className="home-stages__item">
             <div className="home-stages__item-preview">
-              {stage.data.slice(0, 200).map(({ target }, j) =>
+              {/* {stage.data.slice(0, 200).map(({ target }, j) =>
                 logos[target.symbol] && logos[target.symbol] !== 'custom' ? (
                   <div
                     key={logos[target.symbol] + j + i}
                     className="home-stages__item-preview__item"
                     style={{ backgroundImage: `url(https://s3-symbol-logo.tradingview.com/${logos[target.symbol]}.svg)` }}></div>
                 ) : null
-              )}
+              )} */}
             </div>
             <div className="home-stages__item-label">{`Stage ${i + 1}`}</div>
             <div className="home-stages__item-progress">
