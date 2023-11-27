@@ -117,8 +117,10 @@ app.get('/logos/:num', async (req, res) => {
       const resp = await axios.get(`https://s3-symbol-logo.tradingview.com/${logo}.svg`);
       const svg = resp.data;
 
+      const hash = 'data:image/svg+xml;base64,' + window.btoa(svg);
+
       result.push({
-        logo,
+        hash,
         svg,
         ticker,
         desc: tickersMap[ticker].name
