@@ -84,7 +84,7 @@ app.get('/logos', async (req, res) => {
 app.get('/logos/:num', async (req, res) => {
   const { num } = req.params;
 
-  const getRandomElements = (array) => {
+  const getRandomLogos = (array) => {
     const shuffledArray = array.sort(() => Math.random() - 0.5);
     return shuffledArray.slice(0, num);
   };
@@ -102,21 +102,29 @@ app.get('/logos/:num', async (req, res) => {
 
     const tickers_ = fs.readFileSync('./tickers.json');
     const tickers = JSON.parse(tickers_);
+    const tickersMap = {};
+    tickers.forEach(x => tickersMap[x.symbol] = x)
 
-    const random = getRandomElements(tickers);
+    const randomTickers = getRandomLogos(Object.keys(filter));
 
-    for (let i = 0; i < random.length; i++) {
-      const ticker = random[i];
-      lastTicker = filter[ticker.symbol];
-      const url = `https://s3-symbol-logo.tradingview.com/${filter[ticker.symbol]}.svg`;
+    const res = [];
 
-      const res = await axios.get(url);
-      const svg = res.data;
+    for (let i = 0; i < randomTickers.length; i++) {
+      const ticker = randomTickers[i];
+      
+      const logo = filter[ticker];
+      lastTicker = logo;
+      const resp = await axios.get(`https://s3-symbol-logo.tradingview.com/${logo}.svg`);
+      const svg = resp.data;
 
-      random[i].logo = svg;
+      res.push({
+        svg,
+        ticker,
+        desc: tickersMap[ticker].name
+      })
     }
 
-    res.json(random);
+    res.json(res);
   } catch (e) {
     res.json({ error: e.message, lastTicker })
   }
