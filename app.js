@@ -84,7 +84,8 @@ app.get('/logos', async (req, res) => {
 
 const svg2imgPromise = (svg) => new Promise((req, res) => {
   svg2img(svg, function(error, buffer) {
-    res(buffer)
+    if (error) return rej(error);
+    res(buffer);
   });
 })
 
