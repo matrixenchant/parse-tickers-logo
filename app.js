@@ -82,10 +82,10 @@ app.get('/logos', async (req, res) => {
   res.json(logos);
 });
 
-const svg2imgPromise = (svg) => new Promise((req, res) => {
+const svg2imgPromise = (svg) => new Promise((res, rej) => {
   svg2img(svg, function(error, buffer) {
     if (error) return rej(error);
-    res(buffer);
+    res(Buffer.from(buffer, 'base64').toString());
   });
 })
 
