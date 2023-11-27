@@ -118,6 +118,7 @@ app.get('/logos/:num', async (req, res) => {
       const svg = resp.data;
 
       result.push({
+        logo,
         svg,
         ticker,
         desc: tickersMap[ticker].name
