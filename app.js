@@ -87,27 +87,31 @@ app.get('/logos/:num', async (req, res) => {
   const getRandomElements = (array) => {
     const shuffledArray = array.sort(() => Math.random() - 0.5);
     return shuffledArray.slice(0, num);
+  };
+
+  try {
+    const logos_ = fs.readFileSync('./logos.json');
+    const logos = JSON.parse(logos_);
+
+    const tickers_ = fs.readFileSync('./tickers.json');
+    const tickers = JSON.parse(tickers_);
+
+    const random = getRandomElements(tickers);
+
+    for (let i = 0; i < random.length; i++) {
+      const ticker = random[i];
+      const url = `https://s3-symbol-logo.tradingview.com/${logos[ticker.symbol]}.svg`;
+
+      const res = await fetch(url);
+      const svg = await res.text();
+
+      random[i].logo = svg;
+    }
+
+    res.json(random);
+  } catch (e) {
+    res.json({ error: e.message })
   }
-
-  const logos_ = fs.readFileSync('./logos.json');
-  const logos = JSON.parse(logos_);
-
-  const tickers_ = fs.readFileSync('./tickers.json');
-  const tickers = JSON.parse(tickers_);
-
-  const random = getRandomElements(tickers);
-
-  for (let i = 0; i < random.length; i++) {
-    const ticker = random[i];
-    const url = `https://s3-symbol-logo.tradingview.com/${logos[ticker.symbol]}.svg`;
-
-    const res = await fetch(url);
-    const svg = await res.text();
-
-    random[i].logo = svg;
-  }
-  
-  res.json(random);
 });
 
 app.get('/fill-empty', async (req, res) => {
@@ -129,7 +133,7 @@ app.get('/fill-empty', async (req, res) => {
       }
 
       if (isCustom) {
-        logos[target.symbol] = 'custom'
+        logos[target.symbol] = 'custom';
         n++;
       }
     });
@@ -160,7 +164,6 @@ app.post('/save', async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
-
 
 app.use('/', express.static(path.join(__dirname, './client/dist')));
 app.get('/*', function (req, res) {
