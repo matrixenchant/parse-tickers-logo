@@ -4,6 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import svg2img from 'svg2img';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -81,6 +82,12 @@ app.get('/logos', async (req, res) => {
   res.json(logos);
 });
 
+const svg2imgPromise = (svg) => new Promise((req, res) => {
+  svg2img(svg, function(error, buffer) {
+    res(buffer)
+  });
+})
+
 app.get('/logos/:num', async (req, res) => {
   const { num } = req.params;
 
@@ -117,7 +124,7 @@ app.get('/logos/:num', async (req, res) => {
       const resp = await axios.get(`https://s3-symbol-logo.tradingview.com/${logo}.svg`);
       const svg = resp.data;
 
-      const hash = 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
+      const hash = await svg2imgPromise(svg);
 
       result.push({
         hash,
