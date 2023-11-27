@@ -93,6 +93,11 @@ app.get('/logos/:num', async (req, res) => {
     const logos_ = fs.readFileSync('./logos.json');
     const logos = JSON.parse(logos_);
 
+    const filter = {};
+    for (const ticker in logos) {
+      if (logos[ticker] !== 'custom') filter[ticker] = logos[ticker]; 
+    }
+
     const tickers_ = fs.readFileSync('./tickers.json');
     const tickers = JSON.parse(tickers_);
 
@@ -100,7 +105,7 @@ app.get('/logos/:num', async (req, res) => {
 
     for (let i = 0; i < random.length; i++) {
       const ticker = random[i];
-      const url = `https://s3-symbol-logo.tradingview.com/${logos[ticker.symbol]}.svg`;
+      const url = `https://s3-symbol-logo.tradingview.com/${filter[ticker.symbol]}.svg`;
 
       const res = await axios.get(url);
       const svg = res.data;
@@ -170,6 +175,6 @@ app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, './client/dist', 'index.html'));
 });
 
-app.listen(8888, () => {
+app.listen(5000, () => {
   console.log('Server has started on 8888');
 });
