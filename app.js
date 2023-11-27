@@ -89,6 +89,8 @@ app.get('/logos/:num', async (req, res) => {
     return shuffledArray.slice(0, num);
   };
 
+  let lastTicker = '';
+
   try {
     const logos_ = fs.readFileSync('./logos.json');
     const logos = JSON.parse(logos_);
@@ -105,6 +107,7 @@ app.get('/logos/:num', async (req, res) => {
 
     for (let i = 0; i < random.length; i++) {
       const ticker = random[i];
+      lastTicker = ticker.symbol;
       const url = `https://s3-symbol-logo.tradingview.com/${filter[ticker.symbol]}.svg`;
 
       const res = await axios.get(url);
@@ -115,7 +118,7 @@ app.get('/logos/:num', async (req, res) => {
 
     res.json(random);
   } catch (e) {
-    res.json({ error: e.message })
+    res.json({ error: e.message, lastTicker })
   }
 });
 
