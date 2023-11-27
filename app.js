@@ -82,12 +82,28 @@ app.get('/logos', async (req, res) => {
   res.json(logos);
 });
 
-const svg2imgPromise = (svg) => new Promise((res, rej) => {
-  svg2img(svg, function(error, buffer) {
-    if (error) return rej(error);
-    res(buffer);
+const svg2imgPromise = (svg) =>
+  new Promise((res, rej) => {
+    svg2img(
+      svg,
+      {
+        resvg: {
+          fitTo: {
+            mode: 'width', // or height
+            value: 200,
+          },
+          fitTo: {
+            mode: 'height', // or height
+            value: 200,
+          },
+        },
+      },
+      function (error, buffer) {
+        if (error) return rej(error);
+        res(buffer);
+      }
+    );
   });
-})
 
 app.get('/logos/:num', async (req, res) => {
   const { num } = req.params;
@@ -105,13 +121,13 @@ app.get('/logos/:num', async (req, res) => {
 
     const filter = {};
     for (const ticker in logos) {
-      if (logos[ticker] !== 'custom') filter[ticker] = logos[ticker]; 
+      if (logos[ticker] !== 'custom') filter[ticker] = logos[ticker];
     }
 
     const tickers_ = fs.readFileSync('./tickers.json');
     const tickers = JSON.parse(tickers_);
     const tickersMap = {};
-    tickers.forEach(x => tickersMap[x.symbol] = x)
+    tickers.forEach((x) => (tickersMap[x.symbol] = x));
 
     const randomTickers = getRandomLogos(Object.keys(filter));
 
@@ -119,7 +135,7 @@ app.get('/logos/:num', async (req, res) => {
 
     for (let i = 0; i < randomTickers.length; i++) {
       const ticker = randomTickers[i];
-      
+
       const logo = filter[ticker];
       lastTicker = logo;
       const resp = await axios.get(`https://s3-symbol-logo.tradingview.com/${logo}.svg`);
@@ -131,13 +147,13 @@ app.get('/logos/:num', async (req, res) => {
         hash,
         svg,
         ticker,
-        desc: tickersMap[ticker].name
-      })
+        desc: tickersMap[ticker].name,
+      });
     }
 
     res.json(result);
   } catch (e) {
-    res.json({ error: e.message, lastTicker })
+    res.json({ error: e.message, lastTicker });
   }
 });
 
