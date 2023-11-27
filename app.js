@@ -107,7 +107,7 @@ app.get('/logos/:num', async (req, res) => {
 
     const randomTickers = getRandomLogos(Object.keys(filter));
 
-    const res = [];
+    const result = [];
 
     for (let i = 0; i < randomTickers.length; i++) {
       const ticker = randomTickers[i];
@@ -117,14 +117,14 @@ app.get('/logos/:num', async (req, res) => {
       const resp = await axios.get(`https://s3-symbol-logo.tradingview.com/${logo}.svg`);
       const svg = resp.data;
 
-      res.push({
+      result.push({
         svg,
         ticker,
         desc: tickersMap[ticker].name
       })
     }
 
-    res.json(res);
+    res.json(result);
   } catch (e) {
     res.json({ error: e.message, lastTicker })
   }
