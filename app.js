@@ -102,8 +102,8 @@ app.get('/logos/:num', async (req, res) => {
       const ticker = random[i];
       const url = `https://s3-symbol-logo.tradingview.com/${logos[ticker.symbol]}.svg`;
 
-      const res = await fetch(url);
-      const svg = await res.text();
+      const res = await axios.get(url);
+      const svg = res.data;
 
       random[i].logo = svg;
     }
